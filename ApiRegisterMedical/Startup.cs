@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
+using System.Linq;
 
 namespace ApiRegisterMedical
 {
@@ -25,6 +25,10 @@ namespace ApiRegisterMedical
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+
+            services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+            services.AddTransient(typeof(IBaseService<>), typeof(BaseService<>));
 
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddTransient<ICustomerService, CustomerService>();

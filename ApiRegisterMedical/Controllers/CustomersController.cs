@@ -15,20 +15,18 @@ namespace ApiRegisterMedical.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private readonly RegisterMedicalContext _context;
-
         private readonly ICustomerService _customerService;
 
-        public CustomersController(ICustomerService _customerService)
+        public CustomersController(ICustomerService customerService)
         {
-            this._customerService = _customerService;
+            _customerService = customerService;
         }
 
         // GET: api/Customers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> Getcustomers()
         {
-            var result = await _customerService.GetcustomersAll();
+            var result = await _customerService.GetAll();
             return result.ToList();
         }
 
@@ -36,7 +34,7 @@ namespace ApiRegisterMedical.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Customer>> GetCustomer(int id)
         {
-            var customer = await _customerService.GetCustomer(id);
+            var customer = await _customerService.GetById(id);
 
             if (customer == null)
             {
@@ -58,18 +56,11 @@ namespace ApiRegisterMedical.Controllers
             }
             try
             {
-                await _customerService.PutCustomer(id, customer);
+                await _customerService.Put(id, customer);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_customerService.CustomerExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
             return NoContent();
@@ -81,16 +72,16 @@ namespace ApiRegisterMedical.Controllers
         [HttpPost]
         public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
         {
-            var customer_ = await _customerService.PostCustomer(customer);
+            var customer_ = await _customerService.Post(customer);
 
-            return CreatedAtAction("GetCustomer", new { id = customer_.id }, customer_);
+            return CreatedAtAction("GetCustomer", new { id = customer.id }, customer);
         }
 
         // DELETE: api/Customers/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Customer>> DeleteCustomer(int id)
         {
-            var customer = await _customerService.DeleteCustomer(id);
+            var customer = await _customerService.Delete(id);
             if (customer == null)
             {
                 return NotFound();
