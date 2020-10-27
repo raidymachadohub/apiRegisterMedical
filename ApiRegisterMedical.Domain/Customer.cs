@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 namespace ApiRegisterMedical.Domain
 {
     [Table("customer", Schema = "public")]
-    public class Customer
+    public class Customer : Base
     {
         [Key]
         [Column("id_customer")]
